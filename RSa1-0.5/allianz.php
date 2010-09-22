@@ -11,7 +11,8 @@
 ##                                                                             #
 ################################################################################
 
-include("engine/village.php");
+include("engine/Village.php");
+include("engine/Forum.php");
 include("engine/chat.php");
 $start = $generator->pageLoadTimeStart();
 $alliance->procAlliance($_GET);
@@ -21,7 +22,13 @@ $alliance->procAlliForm($_POST);
 <?php include("Templates/header.tpl"); ?>
 <div id="mid">
 <?php include("Templates/menu.tpl"); ?>
-<div id="content"  class="alliance">
+<?php
+if($_GET['s']== 2){
+echo '<div id="content"  class="forum">';
+}else{
+echo '<div id="content"  class="alliance">';
+}
+?>
 <?php 
 if(isset($_GET['s'])) {
 	switch($_GET['s']) {

@@ -527,6 +527,242 @@ class MYSQL_DB {
 		$result = mysql_query($q, $this->connection);
 		return mysql_fetch_array($result);
 	}
+
+	function CheckForum($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_cat where alliance = '$id'";
+		$result = mysql_query($q, $this->connection);
+		if(mysql_num_rows($result)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function CountCat($id) {
+		$q = "SELECT count(id) FROM ".TB_PREFIX."forum_topic where cat = '$id'";
+		$result = mysql_query($q,$this->connection);
+		$row = mysql_fetch_row($result);
+		return $row[0];
+	}
+	
+	function LastTopic($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_topic where cat = '$id' order by post_date";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function CheckLastTopic($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_topic where cat = '$id'";
+		$result = mysql_query($q, $this->connection);
+		if(mysql_num_rows($result)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function CheckLastPost($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_post where topic = '$id'";
+		$result = mysql_query($q, $this->connection);
+		if(mysql_num_rows($result)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function LastPost($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_post where topic = '$id'";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function CountTopic($id) {
+		$q = "SELECT count(id) FROM ".TB_PREFIX."forum_post where owner = '$id'";
+		$result = mysql_query($q,$this->connection);
+		$row = mysql_fetch_row($result);
+		
+		$qs = "SELECT count(id) FROM ".TB_PREFIX."forum_topic where owner = '$id'";
+		$results = mysql_query($qs,$this->connection);
+		$rows = mysql_fetch_row($results);
+		return $row[0]+$rows[0];
+	}
+	
+	function CountPost($id) {
+		$q = "SELECT count(id) FROM ".TB_PREFIX."forum_post where topic = '$id'";
+		$result = mysql_query($q,$this->connection);
+		$row = mysql_fetch_row($result);
+		return $row[0];
+	}
+		
+	function ForumCat() {
+		$q = "SELECT * from ".TB_PREFIX."forum_cat ORDER BY id";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function ForumCatEdit($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_cat where id = '$id'";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function ForumCatName($id) {
+		$q = "SELECT forum_name from ".TB_PREFIX."forum_cat where id = $id";
+		$result = mysql_query($q, $this->connection);
+		$dbarray = mysql_fetch_array($result);
+		return $dbarray['forum_name'];
+	}
+	
+	function CheckCatTopic($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_topic where cat = '$id'";
+		$result = mysql_query($q, $this->connection);
+		if(mysql_num_rows($result)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function CheckResultEdit($alli) {
+		$q = "SELECT * from ".TB_PREFIX."forum_edit where alliance = '$alli'";
+		$result = mysql_query($q, $this->connection);
+		if(mysql_num_rows($result)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function CheckCloseTopic($id) {
+		$q = "SELECT close from ".TB_PREFIX."forum_topic where id = '$id'";
+		$result = mysql_query($q, $this->connection);
+		$dbarray = mysql_fetch_array($result);
+		return $dbarray['close'];
+	}
+	
+	function CheckEditRes($alli) {
+		$q = "SELECT result from ".TB_PREFIX."forum_edit where alliance = '$alli'";
+		$result = mysql_query($q, $this->connection);
+		$dbarray = mysql_fetch_array($result);
+		return $dbarray['result'];
+	}
+	
+	function CreatResultEdit($alli,$result) {
+		$q = "INSERT into ".TB_PREFIX."forum_edit values (0,'$alli','$result')";
+		mysql_query($q,$this->connection);
+		return mysql_insert_id($this->connection);
+	}
+	
+	function UpdateResultEdit($alli,$result) {
+		$date = time();
+		$q = "UPDATE ".TB_PREFIX."forum_edit set result = '$result' where alliance = '$alli'";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function UpdateEditTopic($id,$title,$cat) {
+		$q = "UPDATE ".TB_PREFIX."forum_topic set title = '$title', cat = '$cat' where id = $id";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function UpdateEditForum($id,$name,$des) {
+		$q = "UPDATE ".TB_PREFIX."forum_cat set forum_name = '$name', forum_des = '$des' where id = $id";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function StickTopic($id,$mode) {
+		$q = "UPDATE ".TB_PREFIX."forum_topic set stick = '$mode' where id = '$id'";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function ForumCatTopic($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_topic where cat = '$id' AND stick = '' ORDER BY post_date desc";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function ForumCatTopicStick($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_topic where cat = '$id' AND stick = '1' ORDER BY post_date desc";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function ShowTopic($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_topic where id = '$id'";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function ShowPost($id) {
+		$q = "SELECT * from ".TB_PREFIX."forum_post where topic = '$id'";
+		$result = mysql_query($q,$this->connection);
+		return $this->mysql_fetch_all($result);
+	}
+	
+	function CreatForum($owner,$alli,$name,$des,$area) {
+		$q = "INSERT into ".TB_PREFIX."forum_cat values (0,'$owner','$alli','$name','$des','$area')";
+		mysql_query($q,$this->connection);
+		return mysql_insert_id($this->connection);
+	}
+	
+	function CreatTopic($title,$post,$cat,$owner,$alli,$ends) {
+		$date = time();
+		$q = "INSERT into ".TB_PREFIX."forum_topic values (0,'$title','$post','$date','$date','$cat','$owner','$alli','$ends','','')";
+		mysql_query($q,$this->connection);
+		return mysql_insert_id($this->connection);
+	}
+	
+	function CreatPost($post,$tids,$owner) {
+		$date = time();
+		$q = "INSERT into ".TB_PREFIX."forum_post values (0,'$post','$tids','$owner','$date')";
+		mysql_query($q,$this->connection);
+		return mysql_insert_id($this->connection);
+	}
+	
+	function UpdatePostDate($id) {
+		$date = time();
+		$q = "UPDATE ".TB_PREFIX."forum_topic set post_date = '$date' where id = $id";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function EditUpdateTopic($id,$post) {
+		$q = "UPDATE ".TB_PREFIX."forum_topic set post = '$post' where id = $id";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function EditUpdatePost($id,$post) {
+		$q = "UPDATE ".TB_PREFIX."forum_post set post = '$post' where id = $id";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function LockTopic($id,$mode) {
+		$q = "UPDATE ".TB_PREFIX."forum_topic set close = '$mode' where id = '$id'";
+		return mysql_query($q, $this->connection);
+	}
+	
+	function DeleteCat($id) {
+		$qs = "DELETE from ".TB_PREFIX."forum_cat where id = '$id'";
+		$q = "DELETE from ".TB_PREFIX."forum_topic where cat = '$id'";
+			mysql_query($qs,$this->connection);
+		return mysql_query($q,$this->connection);
+	}
+	
+	function DeleteTopic($id) {
+		$qs = "DELETE from ".TB_PREFIX."forum_topic where id = '$id'";
+		$q = "DELETE from ".TB_PREFIX."forum_post where topic = '$id'";
+			mysql_query($qs,$this->connection);
+		return mysql_query($q,$this->connection);
+	}
+	
+	function DeletePost($id) {
+		$q = "DELETE from ".TB_PREFIX."forum_post where id = '$id'";
+		return mysql_query($q,$this->connection);
+	}
 	
 	function getAllianceName($id) {
 		$q = "SELECT tag from ".TB_PREFIX."alidata where id = $id";
