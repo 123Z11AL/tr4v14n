@@ -11,8 +11,8 @@
 ##                                                                             #
 ################################################################################
 
-include("engine/Village.php");
-include("engine/Forum.php");
+include("engine/village.php");
+include("engine/forum.php");
 include("engine/chat.php");
 $start = $generator->pageLoadTimeStart();
 $alliance->procAlliance($_GET);
